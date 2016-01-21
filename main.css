@@ -1,0 +1,9 @@
+body {
+	font: 12px Helvetica, sans-serif;
+}
+
+#spreadsheet {
+	width: 580px;
+	height: 380px;
+	overflow: hidden;
+}

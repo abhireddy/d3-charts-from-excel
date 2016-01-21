@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="bower_components/handsontable/dist/handsontable.full.js"></script>
+<link rel="stylesheet" media="screen" href="bower_components/handsontable/dist/handsontable.full.css">
+<link rel="stylesheet" href="main.css"
+</head>
+
+<body>
+
+<div id="headline"><h1>SHARE INTERACTIVE CHARTS WITH JUST A URL</h1></div>
+
+<div id="instructions">Paste your data into the spreadsheet.</div>
+
+<div id="spreadsheet"></div>
+
+<button name="save" id="save">Save</button>
+
+</body>
+
+<script>
+  var
+    $$ = function(id) {
+      return document.getElementById(id);
+    },
+    container = $$('spreadsheet'),
+    save = $$('save'),
+    data = [[]],
+    hot;
+
+  hot = new Handsontable(container, {
+    data: data, 
+    minRows: 15,
+    minCols: 10,
+    rowHeaders: true,
+    colHeaders: true,
+    contextMenu: true,
+    manualRowResize: true,
+    manualColumnResize: true,
+  });
+
+  Handsontable.Dom.addEvent(save, 'click', function() {
+    // save all cell's data
+    var 
+      UBRows = hot.countRows() - hot.countEmptyRows('ending') - 1,
+      UBCols = hot.countCols() - hot.countEmptyCols('ending') - 1,
+      jsoncontents = JSON.stringify({data: hot.getData(0,0,UBRows,UBCols)});
+      
+      ajax('save.json', 'GET', jsoncontents);
+  });
+</script>
+
+</html>
