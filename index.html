@@ -2,21 +2,36 @@
 <html>
 
 <head>
+<!-- handsontable.com -->  
 <script src="bower_components/handsontable/dist/handsontable.full.js"></script>
 <link rel="stylesheet" media="screen" href="bower_components/handsontable/dist/handsontable.full.css">
-<link rel="stylesheet" href="main.css"
+<!-- d3js.org -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- onehackoranother.com/projects/jquery/tipsy/ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.css">
+<!-- custom stylesheets -->
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="chart.css">
 </head>
 
 <body>
-
-<div id="headline"><h1>SHARE INTERACTIVE CHARTS WITH JUST A URL</h1></div>
-
-<div id="instructions">Paste your data into the spreadsheet.</div>
-
-<div id="spreadsheet"></div>
-
-<button name="save" id="save">Save</button>
-
+  <div id="headline"><h1>SHARE BEAUTIFUL CHARTS INSTANTLY.</h1></div>
+  <div id="instructions">Paste your data into the spreadsheet.</div>
+  <div id="spreadsheet"></div>
+  <div id="chart">
+    <!--
+    <div id="inputs">
+    <select id="xSelector" class="selector"></select>
+    <select id="ySelector" class="selector"></select>
+    </div>
+    -->
+  </div>
+  <div id="navigation">
+    <button name="save" id="save">Select Chart</button>
+  </div>
 </body>
 
 <script>
@@ -27,7 +42,8 @@
     container = $$('spreadsheet'),
     save = $$('save'),
     data = [[]],
-    hot;
+    hot,
+    filename;
 
   hot = new Handsontable(container, {
     data: data, 
@@ -41,14 +57,137 @@
   });
 
   Handsontable.Dom.addEvent(save, 'click', function() {
-    // save all cell's data
+    // save all cells' data
     var 
       UBRows = hot.countRows() - hot.countEmptyRows('ending') - 1,
       UBCols = hot.countCols() - hot.countEmptyCols('ending') - 1,
-      jsoncontents = JSON.stringify({data: hot.getData(0,0,UBRows,UBCols)});
+      tabledata = hot.getData(0,0,UBRows,UBCols);
       
-      ajax('save.json', 'GET', jsoncontents);
+    filename = "csv/"+Math.floor((Math.random() * 1000000000) + 1)+".csv";
+
+    $.ajax({
+        url: "scripts/save.php",
+        type: "post",
+        data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename },
+        success: function() {
+          $("#spreadsheet").hide(250);
+          drawChart();
+          $("#chart").show(250);
+        }
+     });
+
   });
 </script>
 
+<script>
+  var margin = {top: 20, right: 20, bottom: 50, left: 80},
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+  var x = d3.scale.linear()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var color = d3.scale.category20();
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  function drawChart() {
+    //filename = "csv/136559847.csv";
+
+    d3.csv(filename, function(error, data) {
+      if (error) throw error;
+      columns = d3.keys(data[0]);
+    });
+
+
+    d3.csv(filename, function(error, data) {
+      if (error) throw error;
+
+      data.forEach(function(d) {
+        columns.forEach(function(c) {
+          d[c] = +d[c];
+        });
+      });
+
+      color.domain(d3.keys(data[0]).filter(function(key) { return key !== columns[0]; }));
+
+      var datasets = color.domain().map(function(name) {
+        return {
+          values: data.map(function(d) {
+            return {xData: d[columns[0]], yData: d[name], name: name };
+          })
+        };
+      });
+
+      //alert(datasets[0].name);
+
+      x.domain(d3.extent(data, function(d) { return d[columns[0]]; })).nice();
+
+      y.domain([
+        d3.min(datasets, function(c) { return d3.min(c.values, function(v) { return v.yData; }); }),
+        d3.max(datasets, function(c) { return d3.max(c.values, function(v) { return v.yData; }); })
+      ]).nice();
+
+      //draw X axis
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+        .append("text")
+          .attr("class", "x label")
+          .attr("x", width)
+          .attr("y", 40)
+          .style("text-anchor", "end")
+          .text(columns[0]);
+
+      //draw Y axis
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("class", "y label")
+          .attr("transform", "rotate(-90)")
+          .attr("y", "-3.5em")
+          .attr("dy", ".71em")
+          .style("text-anchor", "end");
+
+      var series = svg.selectAll(".series")
+          .data(datasets)
+        .enter().append("g")
+          .attr("class", "series");
+
+      series.selectAll("circle")
+          .data(function(d) { return d.values; })
+        .enter().append("circle")
+          .attr("r", 4)
+          .attr("cx", function(d) { return x(d.xData); })
+          .attr("cy", function(d) { return y(d.yData); })
+          .style("fill", function(d) { return color(d.name); });
+
+      $("circle").tipsy({ 
+        gravity: 'w',
+        html: true, 
+        title: function() {
+          var d = this.__data__;
+          return columns[0] + ": " + d.xData + "<br/>" + d.name + ": " + d.yData;
+        }
+      });
+    });
+  }
+</script>
 </html>

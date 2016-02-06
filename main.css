@@ -6,4 +6,9 @@ body {
 	width: 580px;
 	height: 380px;
 	overflow: hidden;
+	/* display: none; */
+}
+
+#chart {
+	display: none;
 }

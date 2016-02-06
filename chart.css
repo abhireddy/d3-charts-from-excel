@@ -1,0 +1,23 @@
+#chart {
+  font: 1.2em Georgia;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #d3d3d3; 
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: white;
+}
+
+.legend {
+  font-size: 1em;
+}
+
+/* hover tooltips */
+.tipsy-inner {
+    opacity: 0.7;
+}
