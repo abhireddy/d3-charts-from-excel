@@ -15,24 +15,63 @@
 <!-- custom stylesheets -->
 <link rel="stylesheet" href="main.css">
 <link rel="stylesheet" href="chart.css">
+<!-- http://codepen.io/Savantos/pen/mHIpt -->
+<link rel="stylesheet" href="button.css">
 </head>
 
 <body>
-  <div id="headline"><h1>SHARE BEAUTIFUL CHARTS INSTANTLY.</h1></div>
-  <div id="instructions">Paste your data into the spreadsheet.</div>
-  <div id="spreadsheet"></div>
-  <div id="chart">
-    <!--
-    <div id="inputs">
-    <select id="xSelector" class="selector"></select>
-    <select id="ySelector" class="selector"></select>
+  <div id="headline" class="title"><h1>SHARE BEAUTIFUL CHARTS INSTANTLY.</h1></div>
+  <div id="step1">
+    <div id="choosechart">
+      <div id="barradio" class="chartradio selected">
+        <input type="radio" name="charttype" class="charttype" id="barchart" value="bar" checked="true">
+        <label for="barchart">
+          <div>
+            <span class="title"><h2>Bar Chart</h2></span>
+            <div class="chart-description">For a column of categorical data and 1 or more columns of numerical data.</div>
+          </div>
+        </label>
+      </div>
+      <div id="lineradio" class="chartradio">
+        <input type="radio" name="charttype" class="charttype" id="linechart" value="line">
+        <label for="linechart">
+          <div>
+            <span class="title"><h2>Line Chart</h2></span>
+            <div class="chart-description">For a column of time series data and 1 or more columns of numerical data.</div>  
+          </div>      
+        </label>
+      </div>
+      <div id="scatterradio" class="chartradio">
+        <input type="radio" name="charttype" class="charttype" id="scatterplot" value="scatter">
+        <label for="scatterplot">
+          <div>          
+            <span class="title"><h2>Scatter Plot</h2></span>
+            <div class="chart-description">For 2 or more columns of numerical data.</div>    
+          </div>    
+        </label>
+      </div>
     </div>
-    -->
+    <div class="instructions">Paste your data into the spreadsheet, or <a href="#">use a sample dataset</a>.</div>
+    <div id="spreadsheet"></div>
+    <div class="navigation">
+      <a href="#" class="button" name="createchart" id="createchart"><span>Next</span></a>
+    </div>
   </div>
-  <div id="navigation">
-    <button name="save" id="save">Select Chart</button>
+  <div id="step2">
+    <div class="instructions">Add a title and description.</div>
+    <div id="chart"></div>
   </div>
 </body>
+
+<!-- toggle appearance of radio buttons -->
+<script>
+  $("input[name='charttype']").change(function() {
+    $("#barradio").removeClass("selected");
+    $("#lineradio").removeClass("selected");
+    $("#scatterradio").removeClass("selected");
+    $("input[name='charttype']:checked").parent("div").addClass("selected"); 
+  });
+</script>
 
 <script>
   var
@@ -40,14 +79,14 @@
       return document.getElementById(id);
     },
     container = $$('spreadsheet'),
-    save = $$('save'),
+    save = $$('createchart'),
     data = [[]],
     hot,
     filename;
 
   hot = new Handsontable(container, {
     data: data, 
-    minRows: 15,
+    minRows: 10,
     minCols: 10,
     rowHeaders: true,
     colHeaders: true,
@@ -70,9 +109,9 @@
         type: "post",
         data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename },
         success: function() {
-          $("#spreadsheet").hide(250);
+          $("#step1").hide(250);
           drawChart();
-          $("#chart").show(250);
+          $("#step2").show(250);
         }
      });
 

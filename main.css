@@ -1,14 +1,82 @@
+@font-face {
+   font-family: ADBrown;
+   src: url(fonts/ADBrown-Regular.otf);
+}
+
+@font-face {
+   font-family: ADBrownBold;
+   src: url(fonts/ADBrown-Bold.otf);
+}
+
 body {
-	font: 12px Helvetica, sans-serif;
+	font: 14px Georgia;
+	max-width: 600px;
+	margin: 20px 25px;
+}
+
+#headline {
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+
+.title {
+	font-family: ADBrown, Helvetica;
+}
+
+h1 {
+	margin: 0px;
+}
+
+h2 {
+	margin: 0px;
+	font-size: 16px;
+}
+
+#choosechart {
+	margin-bottom: 20px;
+}
+
+#choosechart input[type=radio] {
+	display: none;
+}
+
+.chart-description {
+	margin-top: 10px; 
+}
+
+.chartradio {
+	padding: 15px;
+	opacity: .5;
+	max-width: 400px;
+	border: 2px solid white;
+}
+
+#choosechart .selected {
+	opacity: 1;
+	border-color: #f6f6f6;
+}
+
+.instructions {
+	margin-bottom: 20px;
 }
 
 #spreadsheet {
-	width: 580px;
-	height: 380px;
+	font-family: sans-serif;
+	width: 550px;
+	height: 260px;
 	overflow: hidden;
-	/* display: none; */
 }
 
-#chart {
+#step2 {
 	display: none;
+}
+
+.navigation {
+	width: 550px;
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+#createchart { 
+	float: right;
 }

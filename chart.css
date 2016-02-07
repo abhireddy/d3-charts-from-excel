@@ -1,5 +1,10 @@
+@font-face {
+   font-family: ADBrown;
+   src: url(fonts/ADBrown-Regular.otf);
+}
+
 #chart {
-  font: 1.2em Georgia;
+  font: 1.2em ADBrown, Georgia;
 }
 
 .axis path,
@@ -15,9 +20,4 @@
 
 .legend {
   font-size: 1em;
-}
-
-/* hover tooltips */
-.tipsy-inner {
-    opacity: 0.7;
 }
