@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<!-- d3js.org -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- onehackoranother.com/projects/jquery/tipsy/ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tipsy/1.0.2/jquery.tipsy.css">
+<!-- custom stylesheets -->
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/chart.css">
+<!-- http://codepen.io/Savantos/pen/mHIpt -->
+<link rel="stylesheet" href="../css/button.css">
+<script src="../js/charts.js"></script>
+</head>
+
+<body>
+  <div id="charttitle" class="title">My Chart</div>
+  <div id="chartdescription">Description goes here.</div>
+  <div id="chart"></div>
+</body>
+
+<!-- toggle appearance of radio buttons -->
+<script>
+  $("input[name='charttype']").change(function() {
+    $("#barradio").removeClass("selected");
+    $("#lineradio").removeClass("selected");
+    $("#scatterradio").removeClass("selected");
+    $("input[name='charttype']:checked").parent("div").addClass("selected"); 
+  });
+</script>
+
+<script>
+drawChart("stacked-bar");
+</script>
+</html>

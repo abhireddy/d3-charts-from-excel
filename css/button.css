@@ -7,7 +7,12 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
 
 @font-face {
    font-family: ADBrownBold;
-   src: url(fonts/ADBrown-Bold.otf);
+   src: url(../fonts/ADBrown-Bold.otf);
+}
+
+@font-face {
+   font-family: ADBrown;
+   src: url(../fonts/ADBrown-Regular.otf);
 }
 
 .button
@@ -26,15 +31,8 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
   position: absolute; 
   top:0; right:0; bottom:0; left:0; */
   
-  /*
-  padding: 20px 0;
-  width: 220px;
-  height:30px;
-  */
-
   padding: 10px 0;
-  width: 100px;
-  /* height:20px; */
+  /* height:10px; */
   
   background: #0D6;
   border: 1px solid #0D6;
@@ -43,6 +41,10 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
   
   transition: all 0.5s;
 }
+
+.btn1 { width: 100px; }
+
+.btn2 { width: 120px; }
 
 .button:hover, .button:active 
 {
@@ -61,6 +63,32 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
   transition: padding-right 0.5s;
 }
 
+
+.button span:after 
+{
+  content: ' \e144 ';  
+  position: absolute;
+  top: 0;
+  right: -18px;
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: -8px;
+
+  background: rgba(0, 0, 0, 0);
+  border: 3px solid #FFF;
+  border-top: none;
+  border-right: none;
+
+  /* transition: opacity 0.5s, top 0.5s, right 0.5s; */
+/*  transition: opacity 0.1s, right 0.1s;
+  transform: rotate(-135deg);
+}
+
+\e144
+
+
+/*
 .button span:after 
 {
   content: ' ';  
@@ -78,10 +106,10 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
   border-right: none;
 
   /* transition: opacity 0.5s, top 0.5s, right 0.5s; */
-  transition: opacity 0.1s, right 0.1s;
+/*  transition: opacity 0.1s, right 0.1s;
   transform: rotate(-135deg);
 }
-
+*/
 .button:hover span, .button:active span 
 {
   padding-right: 30px;

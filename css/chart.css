@@ -1,0 +1,65 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
+#chart {
+  font: 0.9em Georgia, sans-serif;
+}
+
+.tipsy {
+	font: 12px 'Roboto', Helvetica, sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #d3d3d3; 
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: white;
+}
+
+.legend {
+  font-size: 1em;
+}
+
+#charttitle, #chartdescription {
+  margin-bottom: 10px;
+}
+
+/* line chart */
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+/*
+.tipsy-inner {
+	background-color: #ffff66; /* #fcfcfc; */
+/*	color: black; */
+	/* border: 1px solid #fcfcfc; */
+}
+/*
+.tipsy-inner { box-shadow: 0 0 5px #f6f6f6; -webkit-box-shadow: 0 0 5px #f6f6f6; -moz-box-shadow: 0 0 5px #f6f6f6; }
+*/
+/* Rules to colour arrows */
+/*
+.tipsy-arrow-n {
+    border-bottom-color: #ffff66;
+}
+
+.tipsy-arrow-s {
+    border-top-color: #ffff66;
+}
+
+.tipsy-arrow-e {
+    border-left-color: #ffff66;
+}
+
+.tipsy-arrow-w {
+    border-right-color: #ffff66;
+}
+
+*/
