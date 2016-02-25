@@ -11,7 +11,7 @@
 
 body {
 	font: 14px Georgia;
-	max-width: 600px;
+	width: 600px;
 	margin: 20px 25px;
 }
 
@@ -116,7 +116,8 @@ input[type="text"]:focus, textarea:focus {
 /* navigation styles */
 
 .navigation {
-	width: 550px;
+	width: 100%;
+	max-width: 810px;
 	margin-top: 20px;
 	overflow: hidden;
 }
@@ -125,3 +126,6 @@ input[type="text"]:focus, textarea:focus {
 	float: right;
 }
 
+#back {
+	float: left;
+}

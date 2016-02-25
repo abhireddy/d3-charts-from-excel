@@ -46,6 +46,14 @@ sup  { font-size: 36px; font-weight: 100; line-height: 55px; } */
 
 .btn2 { width: 120px; }
 
+.btn3 {
+  width: 100px;
+  text-decoration: none;
+  color: #0C5;
+  border-color: #0C5;
+  background: #FFF;
+}
+
 .button:hover, .button:active 
 {
   text-decoration: none;

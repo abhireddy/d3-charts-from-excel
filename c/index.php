@@ -48,10 +48,10 @@
 </body>
 
 <script>
-	var fileName = "../".concat("<?php echo $row['filename']; ?>"),
-		chartType = "<?php echo $row['charttype']; ?>",
-		title = "<?php echo $row['title']; ?>",
-		description = "<?php echo $row['description']; ?>";
+	var fileName = "../".concat("<?php echo htmlspecialchars($row['filename']); ?>"),
+		chartType = "<?php echo htmlspecialchars($row['charttype']); ?>",
+		title = "<?php echo htmlspecialchars($row['title']); ?>",
+		description = "<?php echo htmlspecialchars($row['description']); ?>";
 
 	if (fileName == "../") {
 		$("#charttitle").text("Invalid URL.");		

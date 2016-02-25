@@ -47,12 +47,12 @@
           <label for="scatterplot">
           <div class="chartradio-inner">          
             <span class="title"><h2>Scatter Plot</h2></span>
-            <div class="chart-description">For 2 or more columns of numerical data.</div>    
+            <div class="chart-description">For 2 or more columns of numerical data.</div>  
           </div>    
           </label>
       </div>
     </div>
-    <div class="instructions">Paste your data into the spreadsheet, or <a href="#">use a sample dataset</a>.</div>
+    <div class="instructions">Paste your data into the spreadsheet to begin.<!--, or <a href="#">use a sample dataset</a>.--></div>
     <div id="spreadsheet"></div>
     <div class="navigation">
       <a href="#" class="button btn1" name="createchart" id="createchart"><span>Next</span></a>
@@ -63,6 +63,7 @@
     <textarea placeholder="An optional description can go here." rows=1 id="chartdescription"></textarea>
     <div id="chart"></div>
     <div class="navigation">
+      <a href="#" class="button btn3" name="back" id="back"><span>Back</span></a>
       <a href="#" class="button btn2" name="getlink" id="getlink"><span>Get Link</span></a>
     </div>
   </div>
@@ -121,14 +122,16 @@
         type: "post",
         data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename, chart: chart },
         success: function() {
-          $("#headline").hide(250);
-          $("#step1").hide(250);
+          $("#headline").hide();
+          $("#step1").hide();
           $("#step2").show(); //250);
           drawChart(filename, chart);
+          console.log($("body").outerHeight( true ));
         }
      });
   });
 
+  // event listener for "get link" button
   $("#getlink").click(function(e) {
     e.preventDefault();
 
@@ -141,10 +144,19 @@
       type: "post",
       data: { filename: filename, title: title, description: description },
       success: function() {
-        alert("Your link is chart.tools/c/?i=" + uniquestring);
+        prompt("Chart saved. Here's your link:", "chart.tools/c/?i=" + uniquestring);
         $("#getlink").html("<span>Update</span>");
       }
     });
+  });
+
+  //event listener for back button
+  $("#back").click(function(e) {
+    e.preventDefault();
+    $("#chart").empty();
+    $("#step2").hide(250);
+    $("#headline").show(250);
+    $("#step1").show(250);
   });
 </script>
 <!--

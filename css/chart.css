@@ -2,6 +2,8 @@
 
 #chart {
   font: 0.9em Georgia, sans-serif;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .tipsy {
@@ -33,6 +35,12 @@
   fill: none;
   stroke: steelblue;
   stroke-width: 3px;
+}
+
+.x-label, .y-label {
+  font-size: 20px;
+  fill: gray;
+  text-anchor: end;
 }
 
 /*

@@ -1,4 +1,20 @@
 function drawChart(filename, charttype) {
+  //calculate chart dimensions and margins
+  bodyMargin = { top: parseInt($("body").css("margin-top")),
+                      bottom: parseInt($("body").css("margin-bottom")),
+                      left: parseInt($("body").css("margin-left")),
+                      right: parseInt($("body").css("margin-right")) };
+
+  //getMargins(filename);
+
+  margin = {top: 20, right: 20, bottom: 40, left: 80},
+    ww = Math.min(window.innerWidth, 900), // document.getElementById("chart").clientWidth,
+    hh = Math.min(window.innerHeight, 900), //document.getElementById("chart").clientHeight,
+    width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right, //$("body").css("margin-left") - $("body").css("margin-right"),
+    height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
+  
+    console.log($("body").outerHeight( true ));
+  //determine the user's chart type
   if (charttype == "stacked-bar") {
     drawStackedBar(filename);
   } else if (charttype == "line") {
@@ -11,12 +27,22 @@ function drawChart(filename, charttype) {
   }
 }
 
-function drawLine(filename) {
-  var margin = {top: 20, right: 40, bottom: 30, left: 80},
-      ww = document.getElementById("chart").clientWidth
-      width = ww - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+function adjustLeftMargin() {
+  //figure out the max pixel length of the Y axis labels we just drew
+  var maxLabel = 0;
+  var yTicks = $(".ytick").each(function() { maxLabel = Math.max(maxLabel, this.clientWidth); });
 
+  var newMargin = margin;
+  newMargin.left = maxLabel + 20 + 30;
+  width -= newMargin.left - margin.left;
+  margin.left = newMargin.left;
+  
+  //adjust the margins based on the Y axis labels
+  d3.selectAll(".primary-g")
+  .attr("transform", "translate(" + newMargin.left + "," + margin.top + ")");
+}
+
+function drawLine(filename) {
   var x = d3.time.scale()
     .range([0, width]);
 
@@ -37,6 +63,7 @@ function drawLine(filename) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
+    .attr("class", "primary-g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   d3.csv(filename, function(error, data) {
@@ -70,16 +97,38 @@ function drawLine(filename) {
       d3.max(lines, function(c) { return d3.max(c.values, function(v) { return v.yVal; }); })
     ]);
 
+    //draw Y axis
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .selectAll("text") 
+      .attr("class", "ytick");
+
+    adjustLeftMargin();
+    
+    //if there's only 1 set of Y values, add a label to the Y axis
+    if (columns.length == 2) {
+      var labelOffset = 0 - margin.left + 20; // label font = 20px
+      svg.selectAll(".axis")
+        .append("text")
+          .attr("class", "y-label")
+          .attr("transform", "rotate(-90)")
+          .attr("y", labelOffset)
+          .attr("dy", 0)
+          .style("text-anchor", "end")
+          .text(columns[1]);
+    }
+
     //draw X axis
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
-
-    //draw Y axis
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
+        .call(xAxis)
+      .append("text")
+        .attr("class", "x-label")
+        .attr("x", width)
+        .attr("y", 40)
+        .text(columns[0]);
 
     //create a g element for each line
     var chartLine = svg.selectAll(".chartLine")
@@ -120,11 +169,6 @@ function drawLine(filename) {
 }
 
  function drawStackedBar(filename) {
-  var margin = {top: 20, right: 40, bottom: 30, left: 80},
-      ww = document.getElementById("chart").clientWidth
-      width = ww - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
-
   var x = d3.scale.ordinal()
       .rangeRoundBands([0, width], 0.4)
 
@@ -165,16 +209,38 @@ function drawLine(filename) {
     x.domain(data.map(function(d) { return d[columns[0]]; }));
     y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
-    //draw X-axis
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-    //draw Y-axis
+    //draw Y axis
     svg.append("g")
       .attr("class", "y axis")
-      .call(yAxis);
+      .call(yAxis)
+    .selectAll("text") 
+      .attr("class", "ytick");
+
+    adjustLeftMargin();
+
+    //if there's only 1 set of Y values, add a label to the Y axis
+    if (columns.length == 2) {
+      var labelOffset = 0 - margin.left + 20; // label font = 20px
+      svg.selectAll(".axis")
+        .append("text")
+          .attr("class", "y-label")
+          .attr("transform", "rotate(-90)")
+          .attr("y", labelOffset)
+          .attr("dy", 0)
+          .style("text-anchor", "end")
+          .text(columns[1]);
+    }
+
+    //draw X-axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+      .append("text")
+        .attr("class", "x-label")
+        .attr("x", width)
+        .attr("y", 40)
+        .text(columns[0]);
 
     var bars = svg.selectAll(".bars")
         .data(data)
@@ -232,10 +298,6 @@ function drawLine(filename) {
 }
 
 function drawScatter(filename) {
-    var margin = {top: 20, right: 20, bottom: 50, left: 80},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
-
   var x = d3.scale.linear()
       .range([0, width]);
 
@@ -304,16 +366,24 @@ function drawScatter(filename) {
         .style("text-anchor", "end")
         .text(columns[0]);
 
-    //draw Y axis
-    svg.append("g")
+    if (columns.length == 2) {
+      var labelOffset = 0 - margin.left + 20; // label font = 20px
+
+      svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
-        .attr("class", "y label")
+        .attr("class", "y-label")
         .attr("transform", "rotate(-90)")
-        .attr("y", "-3.5em")
-        .attr("dy", ".71em")
-        .style("text-anchor", "end");
+        .attr("y", labelOffset)
+        .attr("dy", 0)
+        .style("text-anchor", "end")
+        .text(columns[1]);
+    } else {
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+    }
 
     var series = svg.selectAll(".series")
         .data(datasets)
