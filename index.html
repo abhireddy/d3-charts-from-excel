@@ -24,10 +24,12 @@
   <div id="headline" class="title"><h1>SHARE BEAUTIFUL CHARTS INSTANTLY.</h1></div>
   <div id="step1">
     <div id="choosechart">
+    <div class="instructions">1. Choose a chart:</div>
       <div id="barradio" class="chartradio selected">
         <input type="radio" name="charttype" class="charttype" id="barchart" value="stacked-bar" checked="true">
           <label for="barchart">
           <div class="chartradio-inner">
+            <img src="images/bar_icon.svg" width="50px" class="choice-icon">
             <span class="title"><h2>Bar Chart</h2></span>
             <div class="chart-description">For a column of categorical data and 1 or more columns of numerical data.</div>
           </div>
@@ -37,6 +39,7 @@
         <input type="radio" name="charttype" class="charttype" id="linechart" value="line">
           <label for="linechart">
           <div class="chartradio-inner">
+            <img src="images/line_icon.svg" width="50px" class="choice-icon">
             <span class="title"><h2>Line Chart</h2></span>
             <div class="chart-description">For a column of time series data and 1 or more columns of numerical data.</div>  
           </div>      
@@ -45,20 +48,22 @@
       <div id="scatterradio" class="chartradio">
         <input type="radio" name="charttype" class="charttype" id="scatterplot" value="scatter">
           <label for="scatterplot">
-          <div class="chartradio-inner">          
+          <div class="chartradio-inner">         
+            <img src="images/scatter_icon.svg" width="50px" class="choice-icon">
             <span class="title"><h2>Scatter Plot</h2></span>
             <div class="chart-description">For 2 or more columns of numerical data.</div>  
           </div>    
           </label>
       </div>
     </div>
-    <div class="instructions">Paste your data into the spreadsheet to begin.<!--, or <a href="#">use a sample dataset</a>.--></div>
+    <div class="instructions">2. Paste your data into the spreadsheet:<!--, or <a href="#">use a sample dataset</a>.--></div>
     <div id="spreadsheet"></div>
     <div class="navigation">
       <a href="#" class="button btn1" name="createchart" id="createchart"><span>Next</span></a>
     </div>
   </div>
   <div id="step2">
+    <div class="instructions">3. Add a title and description (optional):</div>
     <input type="text" placeholder="My Chart" id="charttitle" class="title"></input><br/>
     <textarea placeholder="An optional description can go here." rows=1 id="chartdescription"></textarea>
     <div id="chart"></div>
@@ -122,11 +127,11 @@
         type: "post",
         data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename, chart: chart },
         success: function() {
-          $("#headline").hide();
+          //$("#headline").hide();
           $("#step1").hide();
           $("#step2").show(); //250);
           drawChart(filename, chart);
-          console.log($("body").outerHeight( true ));
+          // console.log($("body").outerHeight( true ));
         }
      });
   });

@@ -59,8 +59,13 @@ h2 {
 
 #choosechart .selected {
 	opacity: 1;
-	/* border-color: #f6f6f6; */
-	border-color: #d3d3d3;
+	/* border-color: #f6f6f6;
+	border-color: #d3d3d3; */
+}
+
+.choice-icon {
+	float: left;
+	margin-right: 10px;
 }
 
 .chartradio:hover {
@@ -69,7 +74,9 @@ h2 {
 }
 
 .instructions {
-	margin-bottom: 20px;
+	margin: 20px 0px;
+	font: 18px ADBrown;
+	text-transform: uppercase;
 }
 
 #spreadsheet {

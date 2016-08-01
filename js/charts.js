@@ -1,4 +1,37 @@
 function drawChart(filename, charttype) {
+
+  bodyMargin = { top: parseInt($("body").css("margin-top")),
+                  bottom: parseInt($("body").css("margin-bottom")),
+                  left: parseInt($("body").css("margin-left")),
+                  right: parseInt($("body").css("margin-right")) };
+
+  // first, read the data to create most visually appealing dimensions
+  // given the # of data points and type of chart
+/*
+  testvariable = d3.csv(filename, function(error, data) {
+    if (error) throw error;
+
+    margin = {top: 20, right: 20, bottom: 40, left: 80},
+      ww = Math.min(window.innerWidth, data.length * 10)
+      hh = Math.min(window.innerHeight, data.length * 10)
+      width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right,
+      height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
+  });
+*/
+  if (charttype == "stacked-bar") {
+    drawStackedBar(filename);
+  } else if (charttype == "line") {
+    drawLine(filename);
+  } else if (charttype == "scatter") {
+    drawScatter(filename);
+  }
+  else {
+    console.log("invalid chart type");
+  }
+}
+/*
+old version of drawchart that doesn't scale based on # of data points
+function drawChart(filename, charttype) {
   //calculate chart dimensions and margins
   bodyMargin = { top: parseInt($("body").css("margin-top")),
                       bottom: parseInt($("body").css("margin-bottom")),
@@ -13,7 +46,6 @@ function drawChart(filename, charttype) {
     width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right, //$("body").css("margin-left") - $("body").css("margin-right"),
     height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
   
-    console.log($("body").outerHeight( true ));
   //determine the user's chart type
   if (charttype == "stacked-bar") {
     drawStackedBar(filename);
@@ -26,6 +58,8 @@ function drawChart(filename, charttype) {
     alert("invalid chart type");
   }
 }
+
+*/
 
 function adjustLeftMargin() {
   //figure out the max pixel length of the Y axis labels we just drew
@@ -43,31 +77,38 @@ function adjustLeftMargin() {
 }
 
 function drawLine(filename) {
-  var x = d3.time.scale()
-    .range([0, width]);
-
-  var y = d3.scale.linear()
-    .range([height, 0]);
-
-  var color = d3.scale.category10();
-
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
-  var svg = d3.select("#chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("class", "primary-g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   d3.csv(filename, function(error, data) {
     if (error) throw error;
+
+    margin = {top: 20, right: 20, bottom: 40, left: 80},
+      ww = Math.min(window.innerWidth, data.length * 40 + margin.left + margin.right + bodyMargin.left + bodyMargin.right)
+      hh = Math.min(window.innerHeight, data.length * 40 + margin.top + margin.bottom + $("body").outerHeight( true ) + 3)
+      width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right,
+      height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
+
+    var x = d3.time.scale()
+      .range([0, width]);
+
+    var y = d3.scale.linear()
+      .range([height, 0]);
+
+    var color = d3.scale.category10();
+
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+    var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("class", "primary-g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var columns = d3.keys(data[0]);
 
@@ -169,32 +210,39 @@ function drawLine(filename) {
 }
 
  function drawStackedBar(filename) {
-  var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], 0.4)
-
-  var y = d3.scale.linear()
-      .range([height, 0]);
-
-  var color = d3.scale.category20c();
-
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
-      //.tickFormat(function(d) { return Math.round(d / 1e6) + "M"; });
-
-  // An SVG element with a bottom-right origin.
-  var svg = d3.select("#chart").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   d3.csv(filename, function(error, data) {
     if (error) throw error;
+
+    margin = {top: 20, right: 20, bottom: 40, left: 80},
+    ww = Math.min(window.innerWidth, data.length * 80 + margin.left + margin.right + bodyMargin.left + bodyMargin.right)
+    hh = Math.min(window.innerHeight, data.length * 80 + margin.top + margin.bottom + $("body").outerHeight( true ) + 3)
+    width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right,
+    height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
+
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], 0.4)
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var color = d3.scale.category20c();
+
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+        //.tickFormat(function(d) { return Math.round(d / 1e6) + "M"; });
+
+    // An SVG element with a bottom-right origin.
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var columns = d3.keys(data[0]);
 
@@ -265,10 +313,10 @@ function drawLine(filename) {
       title: function() {
           var d = this.__data__;
           var yval = d.y1 - d.y0;
-          if (d.name == columns[columns.length - 1]) {
-            return d.xval + "<br/>" + d.name + ": " + yval + "<br/>Total: " + d.y1;
+          if (d.name == columns[columns.length - 1] && columns.length != 2) {
+            return d.xval + "<br/>" + d.name + ": " + yval.toLocaleString() + "<br/>Total: " + d.y1.toLocaleString();
           } else {
-            return d.xval + "<br/>" + d.name + ": " + yval;
+            return d.xval + "<br/>" + d.name + ": " + yval.toLocaleString();
           }
       }
     });
@@ -298,6 +346,9 @@ function drawLine(filename) {
 }
 
 function drawScatter(filename) {
+/*
+  console.log("drawscatter Width: ", width, "height: ", height);
+
   var x = d3.scale.linear()
       .range([0, width]);
 
@@ -320,14 +371,45 @@ function drawScatter(filename) {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
   d3.csv(filename, function(error, data) {
     if (error) throw error;
     columns = d3.keys(data[0]);
   });
-
+*/
 
   d3.csv(filename, function(error, data) {
     if (error) throw error;
+
+    margin = {top: 20, right: 20, bottom: 40, left: 80},
+    ww = Math.min(window.innerWidth, data.length * 40 + margin.left + margin.right + bodyMargin.left + bodyMargin.right)
+    hh = Math.min(window.innerHeight, data.length * 40 + margin.top + margin.bottom + $("body").outerHeight( true ) + 3)
+    width = ww - margin.left - margin.right - bodyMargin.left - bodyMargin.right,
+    height = hh - margin.top - margin.bottom - $("body").outerHeight( true ) - 3; // for some reason there's still vertical scroll if i don't subtract 3px...
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var color = d3.scale.category20();
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");    
+
+    columns = d3.keys(data[0]);
 
     data.forEach(function(d) {
       columns.forEach(function(c) {
@@ -353,6 +435,8 @@ function drawScatter(filename) {
       d3.min(datasets, function(c) { return d3.min(c.values, function(v) { return v.yData; }); }),
       d3.max(datasets, function(c) { return d3.max(c.values, function(v) { return v.yData; }); })
     ]).nice();
+
+
 
     //draw X axis
     svg.append("g")
