@@ -56,7 +56,17 @@
           </label>
       </div>
     </div>
-    <div class="instructions">2. Paste your data into the spreadsheet:<!--, or <a href="#">use a sample dataset</a>.--></div>
+    <div class="instructions">2. Set self-destruct timer:</div>
+    <div class="instructions-body">
+      We will delete your data from our servers and your chart will be inaccessible after
+      <select id="lifespan">
+        <option value="day">1 day</option>
+        <option value="week">1 week</option>
+        <option value="month">1 month</option>
+      </select>
+      . <!-- end sentence -->
+    </div>
+    <div class="instructions">3. Paste your data into the spreadsheet:<!--, or <a href="#">use a sample dataset</a>.--></div>
     <div id="spreadsheet"></div>
     <div class="navigation">
       <a href="#" class="button btn1" name="createchart" id="createchart"><span>Next</span></a>
@@ -106,7 +116,7 @@
     manualColumnResize: true,
   });
 
-  var uniquestring = Math.floor((Math.random() * 1000000000) + 1);
+  //var uniquestring = Math.floor((Math.random() * 1000000000) + 1);
 
   Handsontable.Dom.addEvent(save, 'click', function(e) {
     //cancel going to # link
@@ -119,13 +129,28 @@
       tabledata = hot.getData(0,0,UBRows,UBCols);
       
     //generate a filename and get user's choice of chart to pass to script
+    uniquestring = Math.floor((Math.random() * 1000000000) + 1);
     filename = "csv/"+ uniquestring + ".csv";
     var chart = $("input[name='charttype']:checked").val();
+    var lifespan = $("#lifespan").val(), expiration = new Date();
+
+    if (lifespan == "day") {
+      expiration.setDate(expiration.getDate() + 1);
+    } else if (lifespan == "week") {
+      expiration.setDate(expiration.getDate() + 7);
+    } else if (lifespan == "month") {
+      expiration.setDate(expiration.getDate() + 30);
+    } else {
+      console.log ("variable lifespan has no value");
+    }
+    
+    //get date in right format
+    expiration = expiration.toISOString();    
 
     $.ajax({
         url: "scripts/createcsv.php",
         type: "post",
-        data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename, chart: chart },
+        data: { data: hot.getData(0,0,UBRows,UBCols), filename: filename, chart: chart, expiration: expiration},
         success: function() {
           //$("#headline").hide();
           $("#step1").hide();
@@ -141,7 +166,7 @@
     e.preventDefault();
 
     var title = $("#charttitle").val(),
-        description = $("#chartdescription").val()
+        description = $("#chartdescription").val();
 
     //pass data to PHP script to update DB entry for this CSV.
     $.ajax({
@@ -164,117 +189,5 @@
     $("#step1").show(250);
   });
 </script>
-<!--
-<script>
-  var margin = {top: 20, right: 20, bottom: 50, left: 80},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
 
-  var x = d3.scale.linear()
-      .range([0, width]);
-
-  var y = d3.scale.linear()
-      .range([height, 0]);
-
-  var color = d3.scale.category20();
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
-
-  var svg = d3.select("#chart").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  function drawChart() {
-    //filename = "csv/136559847.csv";
-
-    d3.csv(filename, function(error, data) {
-      if (error) throw error;
-      columns = d3.keys(data[0]);
-    });
-
-
-    d3.csv(filename, function(error, data) {
-      if (error) throw error;
-
-      data.forEach(function(d) {
-        columns.forEach(function(c) {
-          d[c] = +d[c];
-        });
-      });
-
-      color.domain(d3.keys(data[0]).filter(function(key) { return key !== columns[0]; }));
-
-      var datasets = color.domain().map(function(name) {
-        return {
-          values: data.map(function(d) {
-            return {xData: d[columns[0]], yData: d[name], name: name };
-          })
-        };
-      });
-
-      //alert(datasets[0].name);
-
-      x.domain(d3.extent(data, function(d) { return d[columns[0]]; })).nice();
-
-      y.domain([
-        d3.min(datasets, function(c) { return d3.min(c.values, function(v) { return v.yData; }); }),
-        d3.max(datasets, function(c) { return d3.max(c.values, function(v) { return v.yData; }); })
-      ]).nice();
-
-      //draw X axis
-      svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis)
-        .append("text")
-          .attr("class", "x label")
-          .attr("x", width)
-          .attr("y", 40)
-          .style("text-anchor", "end")
-          .text(columns[0]);
-
-      //draw Y axis
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-        .append("text")
-          .attr("class", "y label")
-          .attr("transform", "rotate(-90)")
-          .attr("y", "-3.5em")
-          .attr("dy", ".71em")
-          .style("text-anchor", "end");
-
-      var series = svg.selectAll(".series")
-          .data(datasets)
-        .enter().append("g")
-          .attr("class", "series");
-
-      series.selectAll("circle")
-          .data(function(d) { return d.values; })
-        .enter().append("circle")
-          .attr("r", 4)
-          .attr("cx", function(d) { return x(d.xData); })
-          .attr("cy", function(d) { return y(d.yData); })
-          .style("fill", function(d) { return color(d.name); });
-
-      $("circle").tipsy({ 
-        gravity: 's',
-        html: true, 
-        title: function() {
-          var d = this.__data__;
-          return columns[0] + ": " + d.xData + "<br/>" + d.name + ": " + d.yData;
-        }
-      });
-    });
-  }
-</script>
--->
 </html>

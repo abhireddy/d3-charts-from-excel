@@ -301,7 +301,7 @@ function drawLine(filename) {
       .enter().append("rect")
         .attr("width", x.rangeBand())
         .attr("y", function(d) { return y(d.y1); })
-        .attr("height", function(d) {return y(d.y0) - y(d.y1); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
         .attr("stroke-width", 2)
         .attr("stroke", "white")
         .style("fill", function(d) { return color(d.name); });

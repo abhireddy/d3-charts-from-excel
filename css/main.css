@@ -79,6 +79,10 @@ h2 {
 	text-transform: uppercase;
 }
 
+.instructions-body {
+	padding-left: 15px;
+}
+
 #spreadsheet {
 	font-family: sans-serif;
 	width: 550px;
