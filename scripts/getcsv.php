@@ -12,7 +12,7 @@
  
 	$result = $s3->getObject(array(
 	    'Bucket' => $bucket,
-	    'Key'    => $filename
+	    'Key'    => $filename,
 	    'SaveAs' => $filepath
 	));
 ?>
