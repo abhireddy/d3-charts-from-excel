@@ -61,7 +61,7 @@
 	} else {
 	    //pass data to PHP script to download CSV from S3 bucket.
 	    $.ajax({
-	      url: "scripts/getcsv.php",
+	      url: "../scripts/getcsv.php",
 	      type: "post",
 	      data: { filename: "<?php echo htmlspecialchars($row['filename']); ?>" },
 	      success: function() {
