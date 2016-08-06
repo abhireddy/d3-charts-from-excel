@@ -1,5 +1,5 @@
 <?php
-	$filename = "csv/627604913.csv";
+	$filename = "../index.html";
 
 	//upload CSV to Amazon S3 bucket
 	require('../vendor/autoload.php');
@@ -15,6 +15,7 @@
     'secret' => 'PPJtwcgMtYyJhOOxVDD2TJt04EISBSW3pYmUyOoo'
     ));
 
-	$bucket = "snapchart";
+	//$bucket = "snapchart";
+	$bucket = getenv('S3_BUCKET_NAME')?: die('No "S3_BUCKET_NAME" config var in found in env!');
     $upload = $s3->upload($bucket, $filename, fopen('../'.$filename, 'rb'), 'public-read');
 ?>
