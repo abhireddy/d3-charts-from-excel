@@ -25,7 +25,8 @@
     	'secret' => 'PPJtwcgMtYyJhOOxVDD2TJt04EISBSW3pYmUyOoo'
     ));
 
-	$bucket = "snapchart";
+	//$bucket = "snapchart";
+	$bucket = getenv('S3_BUCKET')?: die('No "S3_BUCKET" config var in found in env!');
 
     $upload = $s3->upload($bucket, $filename, fopen('../'.$filename, 'rb'), 'public-read');
 
