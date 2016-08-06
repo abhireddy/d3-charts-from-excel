@@ -19,7 +19,7 @@
 
 	//script runs from app/.heroku/php/lib/php
 	//trying to get to app/vendor/autoload.php
-	require('../../../../vendor/autoload.php');
+	require('vendor/autoload.php');
 	$s3 = Aws\S3\S3Client::factory();
 	$bucket = getenv('S3_BUCKET_NAME')?: die('No "S3_BUCKET_NAME" config var in found in env!');
 
