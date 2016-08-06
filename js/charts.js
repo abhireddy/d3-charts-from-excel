@@ -29,6 +29,7 @@ function drawChart(filename, charttype) {
     console.log("invalid chart type");
   }
 }
+
 /*
 old version of drawchart that doesn't scale based on # of data points
 function drawChart(filename, charttype) {

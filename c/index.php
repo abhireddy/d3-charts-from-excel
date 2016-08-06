@@ -51,15 +51,25 @@
 	var fileName = "../".concat("<?php echo htmlspecialchars($row['filename']); ?>"),
 		chartType = "<?php echo htmlspecialchars($row['charttype']); ?>",
 		title = "<?php echo htmlspecialchars($row['title']); ?>",
-		description = "<?php echo htmlspecialchars($row['description']); ?>";
+		description = "<?php echo htmlspecialchars($row['description']); ?>",
+		deleted = "<?php echo htmlspecialchars($row['deleted']); ?>";
 
 	if (fileName == "../") {
 		$("#charttitle").text("Invalid URL.");		
+	} else if (deleted = 1) {
+		$("#charttitle").text("This chart has expired.");
 	} else {
-		$("#charttitle").text(title);
-		$("#chartdescription").text(description);
+	    //pass data to PHP script to download CSV from S3 bucket.
+	    $.ajax({
+	      url: "scripts/getcsv.php",
+	      type: "post",
+	      data: { filename: "<?php echo htmlspecialchars($row['filename']); ?>" },
+	      success: function() {
+  			$("#charttitle").text(title);
+			$("#chartdescription").text(description);
+	    	drawChart(fileName, chartType);
+	      }
+	    });
 	}
-
-	drawChart(fileName, chartType);
 </script>
 </html>

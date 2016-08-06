@@ -14,7 +14,7 @@
 	$today = Date("Y-m-d");
 
 	echo $today;
-	$sql = "SELECT filename FROM charts WHERE deleted = 0 and expiration >= '".$today."'";
+	$sql = "SELECT filename FROM charts WHERE deleted = 0 and expiration <= '".$today."'";
 	$result = $conn->query($sql);
 
 	//script runs from app/.heroku/php/lib/php
