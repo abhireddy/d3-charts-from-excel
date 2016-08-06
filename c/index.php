@@ -56,7 +56,7 @@
 
 	if (fileName == "../") {
 		$("#charttitle").text("Invalid URL.");		
-	} else if (deleted = 1) {
+	} else if (deleted == 1) {
 		$("#charttitle").text("This chart has expired.");
 	} else {
 	    //pass data to PHP script to download CSV from S3 bucket.
