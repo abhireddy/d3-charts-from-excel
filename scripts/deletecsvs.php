@@ -17,15 +17,21 @@
 	$sql = "SELECT filename FROM charts WHERE deleted = 0 and expiration >= '".$today."'";
 	$result = $conn->query($sql);
 
+	require('../vendor/autoload.php');
+	$s3 = Aws\S3\S3Client::factory();
+	$bucket = getenv('S3_BUCKET_NAME')?: die('No "S3_BUCKET_NAME" config var in found in env!');
+
 	// delete each filename that returns for the query
 	while ($row = $result->fetch_assoc()) {
-		unlink('../'.htmlspecialchars($row['filename']));
+		$result2 = $s3->deleteObject(array(
+			'Bucket' => $bucket,
+			'Key'    => $row['filename']
+		));
+
 		$sql = "UPDATE charts SET deleted=1 WHERE filename='".htmlspecialchars($row['filename'])."'";
 		$conn->query($sql);
 	}
 
 	//close connection
 	$conn->close();
-
-
 ?>
