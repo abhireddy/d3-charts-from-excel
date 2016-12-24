@@ -7,7 +7,8 @@
 	//create CSV from data
 	$fp = fopen('../'.$filename, 'w');
 	foreach ($data as $fields) {
-	    fputcsv($fp, $fields);
+		$cleanfields = preg_replace('/[^0-9.]/','',$fields); // remove special chars (e.g. $ or %, which can't be read by D3. 
+	    fputcsv($fp, $cleanfields);
 	}
 	fclose($fp);
 
