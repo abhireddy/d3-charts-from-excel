@@ -5,4 +5,4 @@ Sharing Excel charts can be awkward. Often, people upload entire workbooks to em
 
 As an alternative, my tool allowed the user to paste their data right into the UI, using [Handsontable](https://handsontable.com/) to present a spreadsheet-like experience. The service would then generate a customizable, interactivate chart in [D3](https://d3js.org/) and provide the user with a link that could be shared via email, Slack, etc.
 
-[Charted](https://medium.com/data-lab/introducing-charted-15161b2cd71e) solves the same use case with a much more polished product. Try them out!
+[Charted](https://medium.com/data-lab/introducing-charted-15161b2cd71e) is a far more polished product that solves the same use case. Try them out!
