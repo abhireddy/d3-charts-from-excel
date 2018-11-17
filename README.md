@@ -1,5 +1,5 @@
 # Creating shareable D3 charts from a spreadsheet
-A very buggy prototype of a tool that, in just a few clicks, creates visualizations from spreadsheet data that can be shared via URL. 
+A very buggy prototype of a tool that, in just a few clicks, creates visualizations from spreadsheet data that can be shared via a public URL. 
 
 Sharing Excel charts can be awkward. Often, people upload entire workbooks to email or Slack, forcing the recipient to download and open a clunky file and then search for the relevant data. Otherwise, Excel charts get exported as images, which strip them of any interactivity. 
 
